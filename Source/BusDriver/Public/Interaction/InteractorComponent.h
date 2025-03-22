@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InteractableComponent.h"
+#include "Camera/CameraComponent.h"
 #include "Components/ActorComponent.h"
 #include "InteractorComponent.generated.h"
 
@@ -35,13 +37,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Detection")
 	void SetDetectionActive(const bool bNewActive);
 
+private:	
+
+	UPROPERTY()
+	UCameraComponent* DetectionCamera;
+	
 public:
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Detection")
 	TEnumAsByte<ECollisionChannel> DetectionChannel = ECC_Visibility;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Detection")
 	float DetectionFrequency = 0.1f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Detection")
 	float DetectionLength = 700.f;
+
+protected:
+
+	// Reference to the hovered interactable
+	UPROPERTY()
+	TObjectPtr<UInteractableComponent> HoveringInteractable;
 	
 private:
 
@@ -52,5 +66,13 @@ private:
 	// Called every frame to update the interaction progress
 	UFUNCTION()
 	void UpdateInteraction(float DeltaTime);
-		
-};
+	
+	// Updates the Hovering Interactable
+	UFUNCTION()
+	void UpdateHoveringInteractable();
+
+public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Detection|Debug")
+	bool bDebugMode = false;
+}; 
