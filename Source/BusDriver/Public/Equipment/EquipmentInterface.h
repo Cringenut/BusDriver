@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Equip")
 	void Unequip(ACharacter* Interactor);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Equip")
+	void Drop(ACharacter* Interactor);
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Actions")
 	void MainAction();
 
