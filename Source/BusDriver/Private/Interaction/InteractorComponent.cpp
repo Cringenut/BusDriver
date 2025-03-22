@@ -34,7 +34,11 @@ void UInteractorComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 		return;
 
 	UpdateDetection(DeltaTime);
-	UpdateInteraction(DeltaTime);
+	
+	if (!InteractionWidget)
+		return;
+	
+	UpdateInteraction();
 }
 
 void UInteractorComponent::SetDetectionActive(const bool bNewActive)
@@ -141,8 +145,28 @@ void UInteractorComponent::UpdateHoveringInteractable()
 	}
 }
 
-void UInteractorComponent::UpdateInteraction(float DeltaTime)
+
+void UInteractorComponent::UpdateInteraction()
 {
+	// MOVE TO INTERACTABLE LATER!!!!!!
+	if (HoveringInteractable && InteractionWidget->IsVisible())
+	{
+		InteractionWidget->SetInteractionText(HoveringInteractable->InteractionText);
+	}
+	else if (HoveringInteractable && !InteractionWidget->IsVisible())
+	{
+		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
+		InteractionWidget->SetInteractionText(HoveringInteractable->InteractionText);
+	}
+	else
+	{
+		InteractionWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UInteractorComponent::SetInteractionWidget(UInteractionWidget* NewInteractionWidget)
+{
+	InteractionWidget = NewInteractionWidget;
 }
 
 

@@ -13,5 +13,9 @@ UCLASS(Blueprintable, meta=(BlueprintSpawnableComponent))
 class BUSDRIVER_API UInteractableComponent : public UBoxComponent
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	FText InteractionText;
 	
 };

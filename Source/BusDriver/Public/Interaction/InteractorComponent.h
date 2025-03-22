@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractableComponent.h"
+#include "InteractionWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ActorComponent.h"
 #include "InteractorComponent.generated.h"
@@ -65,7 +66,7 @@ private:
 
 	// Called every frame to update the interaction progress
 	UFUNCTION()
-	void UpdateInteraction(float DeltaTime);
+	void UpdateInteraction();
 	
 	// Updates the Hovering Interactable
 	UFUNCTION()
@@ -75,4 +76,15 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Detection|Debug")
 	bool bDebugMode = false;
+
+private:
+
+	UPROPERTY()
+	UInteractionWidget* InteractionWidget;
+
+public:
+
+	UFUNCTION(BlueprintCallable, Category = "Detection")
+	void SetInteractionWidget(UInteractionWidget* NewInteractionWidget);
+	
 }; 
