@@ -3,3 +3,39 @@
 
 #include "Interaction/InteractableComponent.h"
 
+#include "Interaction/InteractorComponent.h"
+
+void UInteractableComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Bind functions to delegates
+	OnUpdateWidgetInfo.AddDynamic(this, &UInteractableComponent::HandleUpdateWidgetInfo);
+	OnHoverUpdated.AddDynamic(this, &UInteractableComponent::HandleSetHoverState);
+	OnInteract.AddDynamic(this, &UInteractableComponent::HandleInteract);
+}
+
+void UInteractableComponent::HandleUpdateWidgetInfo(UInteractableComponent* Interactable)
+{
+	// Logic for updating widget info
+	UE_LOG(LogTemp, Log, TEXT("Widget Info Updated for: %s"), *GetName());
+}
+
+void UInteractableComponent::HandleSetHoverState(bool bIsHovering, UInteractorComponent* HoveringInteractor, UInteractableComponent* Interactable)
+{
+	// Logic for hover state changes
+	if (bIsHovering)
+	{
+		UE_LOG(LogTemp, Log, TEXT("%s is being hovered by %s"), *GetName(), *HoveringInteractor->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("%s is no longer being hovered"), *GetName());
+	}
+}
+
+void UInteractableComponent::HandleInteract(UInteractorComponent* Interactor, UInteractableComponent* Interactable)
+{
+	// Logic for handling interactions
+	UE_LOG(LogTemp, Log, TEXT("%s interacted with %s"), *Interactor->GetName(), *GetName());
+}

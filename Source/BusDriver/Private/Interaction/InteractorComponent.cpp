@@ -83,8 +83,6 @@ void UInteractorComponent::UpdateDetection(float DeltaTime)
 
 void UInteractorComponent::UpdateHoveringInteractable()
 {
-	HoveringInteractable = nullptr;
-
 	if (!DetectionCamera || !GetWorld())
 		return;
 
@@ -133,16 +131,24 @@ void UInteractorComponent::UpdateHoveringInteractable()
 			);
 		}
 	}
-
+	
 	if (bHit)
 	{
 		HoveringInteractable = Cast<UInteractableComponent>(HitResult.GetComponent());
 
-		if (HoveringInteractable)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, DetectionFrequency * 2, FColor::Yellow, TEXT("Hovering"));	
-		}
+		if (!HoveringInteractable)
+			return;
+		
+		
+		if (HoveringInteractable->GetOwner() == HitResult.GetActor())
+			return;
+		
+		
+		InteractionWidget->SetInteractionText(HoveringInteractable->InteractableText);
 	}
+
+	HoveringInteractable = nullptr;
+	InteractionWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
 
@@ -151,12 +157,12 @@ void UInteractorComponent::UpdateInteraction()
 	// MOVE TO INTERACTABLE LATER!!!!!!
 	if (HoveringInteractable && InteractionWidget->IsVisible())
 	{
-		InteractionWidget->SetInteractionText(HoveringInteractable->InteractionText);
+		InteractionWidget->SetInteractionText(HoveringInteractable->InteractableText);
 	}
 	else if (HoveringInteractable && !InteractionWidget->IsVisible())
 	{
 		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
-		InteractionWidget->SetInteractionText(HoveringInteractable->InteractionText);
+		InteractionWidget->SetInteractionText(HoveringInteractable->InteractableText);
 	}
 	else
 	{
