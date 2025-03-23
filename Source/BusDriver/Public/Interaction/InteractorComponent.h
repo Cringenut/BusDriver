@@ -56,7 +56,7 @@ protected:
 
 	// Reference to the hovered interactable
 	UPROPERTY()
-	TObjectPtr<UInteractableComponent> HoveringInteractable;
+	UInteractableComponent* HoveringInteractable;
 	
 private:
 
@@ -66,7 +66,7 @@ private:
 
 	// Called every frame to update the interaction progress
 	UFUNCTION()
-	void UpdateInteraction();
+	void UpdateCurrentInteractable(UInteractableComponent* NewHoveringInteractable);
 	
 	// Updates the Hovering Interactable
 	UFUNCTION()
@@ -84,7 +84,9 @@ private:
 
 public:
 
+	FORCEINLINE UInteractionWidget* GetInteractionWidget() const { return InteractionWidget; }
+
 	UFUNCTION(BlueprintCallable, Category = "Detection")
 	void SetInteractionWidget(UInteractionWidget* NewInteractionWidget);
 	
-}; 
+};

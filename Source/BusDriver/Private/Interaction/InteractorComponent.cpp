@@ -33,12 +33,12 @@ void UInteractorComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	if (!bDetectionActive)
 		return;
 
-	UpdateDetection(DeltaTime);
-	
 	if (!InteractionWidget)
 		return;
+
+	UpdateDetection(DeltaTime);
 	
-	UpdateInteraction();
+	
 }
 
 void UInteractorComponent::SetDetectionActive(const bool bNewActive)
@@ -67,7 +67,8 @@ void UInteractorComponent::SetDetectionActive(const bool bNewActive)
 		
 		return;
 	}
-	
+
+	bDetectionActive = bNewActive;
 }
 
 void UInteractorComponent::UpdateDetection(float DeltaTime)
@@ -116,7 +117,7 @@ void UInteractorComponent::UpdateHoveringInteractable()
 			false,
 			DebugDuration,
 			0,
-			2.f // Thickness
+			.3f // Thickness
 		);
 
 		if (bHit)
@@ -131,42 +132,40 @@ void UInteractorComponent::UpdateHoveringInteractable()
 			);
 		}
 	}
-	
+
 	if (bHit)
 	{
-		HoveringInteractable = Cast<UInteractableComponent>(HitResult.GetComponent());
+		TObjectPtr<UInteractableComponent> NewHoveredInteractable = Cast<UInteractableComponent>(HitResult.GetComponent());
 
-		if (!HoveringInteractable)
+		if (NewHoveredInteractable)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, DetectionFrequency * 2, FColor::Yellow, TEXT("Hovering"));
+			UpdateCurrentInteractable(NewHoveredInteractable);
 			return;
-		
-		
-		if (HoveringInteractable->GetOwner() == HitResult.GetActor())
-			return;
-		
-		
-		InteractionWidget->SetInteractionText(HoveringInteractable->InteractableText);
+		}
 	}
 
-	HoveringInteractable = nullptr;
-	InteractionWidget->SetVisibility(ESlateVisibility::Hidden);
+	UpdateCurrentInteractable(nullptr);
 }
 
-
-void UInteractorComponent::UpdateInteraction()
+void UInteractorComponent::UpdateCurrentInteractable(UInteractableComponent* NewHoveringInteractable)
 {
-	// MOVE TO INTERACTABLE LATER!!!!!!
-	if (HoveringInteractable && InteractionWidget->IsVisible())
+	if (NewHoveringInteractable == HoveringInteractable)
+		return;
+    
+	// End hover on the current interactable if it exists
+	if (HoveringInteractable)
 	{
-		InteractionWidget->SetInteractionText(HoveringInteractable->InteractableText);
+		HoveringInteractable->OnHoverUpdated.Broadcast(false, this, HoveringInteractable);
 	}
-	else if (HoveringInteractable && !InteractionWidget->IsVisible())
+    
+	// Update to the new interactable
+	HoveringInteractable = NewHoveringInteractable;
+    
+	// Start hover on the new interactable if valid
+	if (HoveringInteractable)
 	{
-		InteractionWidget->SetVisibility(ESlateVisibility::Visible);
-		InteractionWidget->SetInteractionText(HoveringInteractable->InteractableText);
-	}
-	else
-	{
-		InteractionWidget->SetVisibility(ESlateVisibility::Hidden);
+		HoveringInteractable->OnHoverUpdated.Broadcast(true, this, HoveringInteractable);
 	}
 }
 

@@ -17,6 +17,6 @@ class BUSDRIVER_API UInteractionWidget : public UUserWidget
 public:
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Visibility")
-	void SetInteractionText(const FText& InteractionText);
+	void SetInteractableText(const FText& InteractionText);
 	
 };

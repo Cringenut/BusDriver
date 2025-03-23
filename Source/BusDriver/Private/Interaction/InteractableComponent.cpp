@@ -23,14 +23,20 @@ void UInteractableComponent::HandleUpdateWidgetInfo(UInteractableComponent* Inte
 
 void UInteractableComponent::HandleSetHoverState(bool bIsHovering, UInteractorComponent* HoveringInteractor, UInteractableComponent* Interactable)
 {
+	UInteractionWidget* TempInteractionWidget = HoveringInteractor->GetInteractionWidget();
+
+	if (!TempInteractionWidget)
+		return;
+	
 	// Logic for hover state changes
 	if (bIsHovering)
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s is being hovered by %s"), *GetName(), *HoveringInteractor->GetName());
+		TempInteractionWidget->SetVisibility(ESlateVisibility::Visible);
+		TempInteractionWidget->SetInteractableText(InteractableText);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s is no longer being hovered"), *GetName());
+		TempInteractionWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

@@ -3,6 +3,6 @@
 
 #include "Interaction/InteractionWidget.h"
 
-void UInteractionWidget::SetInteractionText_Implementation(const FText& InteractionText)
+void UInteractionWidget::SetInteractableText_Implementation(const FText& InteractionText)
 {
 }
