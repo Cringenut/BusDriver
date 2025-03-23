@@ -86,7 +86,10 @@ public:
 
 	FORCEINLINE UInteractionWidget* GetInteractionWidget() const { return InteractionWidget; }
 
-	UFUNCTION(BlueprintCallable, Category = "Detection")
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void SetInteractionWidget(UInteractionWidget* NewInteractionWidget);
+
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void Interact();
 	
 };

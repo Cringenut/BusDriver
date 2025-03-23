@@ -15,10 +15,17 @@ void UInteractableComponent::BeginPlay()
 	OnInteract.AddDynamic(this, &UInteractableComponent::HandleInteract);
 }
 
-void UInteractableComponent::HandleUpdateWidgetInfo(UInteractableComponent* Interactable)
+
+void UInteractableComponent::HandleUpdateWidgetInfo(UInteractorComponent* HoveringInteractor,
+	UInteractableComponent* Interactable)
 {
-	// Logic for updating widget info
-	UE_LOG(LogTemp, Log, TEXT("Widget Info Updated for: %s"), *GetName());
+	UInteractionWidget* TempInteractionWidget = HoveringInteractor->GetInteractionWidget();
+
+	if (!TempInteractionWidget)
+		return;
+	
+	TempInteractionWidget->SetInteractableText(InteractableText);
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactable widget update"));
 }
 
 void UInteractableComponent::HandleSetHoverState(bool bIsHovering, UInteractorComponent* HoveringInteractor, UInteractableComponent* Interactable)
@@ -43,5 +50,5 @@ void UInteractableComponent::HandleSetHoverState(bool bIsHovering, UInteractorCo
 void UInteractableComponent::HandleInteract(UInteractorComponent* Interactor, UInteractableComponent* Interactable)
 {
 	// Logic for handling interactions
-	UE_LOG(LogTemp, Log, TEXT("%s interacted with %s"), *Interactor->GetName(), *GetName());
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactable interaction"));
 }

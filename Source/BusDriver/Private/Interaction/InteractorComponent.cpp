@@ -169,6 +169,16 @@ void UInteractorComponent::UpdateCurrentInteractable(UInteractableComponent* New
 	}
 }
 
+void UInteractorComponent::Interact()
+{
+	if (!HoveringInteractable)
+		return;
+
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactor interaction"));
+	HoveringInteractable->OnInteract.Broadcast(this, HoveringInteractable);
+	HoveringInteractable->OnUpdateWidgetInfo.Broadcast(this, HoveringInteractable);
+}
+
 void UInteractorComponent::SetInteractionWidget(UInteractionWidget* NewInteractionWidget)
 {
 	InteractionWidget = NewInteractionWidget;
