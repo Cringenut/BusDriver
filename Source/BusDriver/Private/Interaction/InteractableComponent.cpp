@@ -24,7 +24,7 @@ void UInteractableComponent::HandleUpdateWidgetInfo(UInteractorComponent* Hoveri
 	if (!TempInteractionWidget)
 		return;
 	
-	TempInteractionWidget->SetInteractableText(InteractableText);
+	TempInteractionWidget->SetInteractableText(InteractableTooltip);
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactable widget update"));
 }
 
@@ -39,7 +39,7 @@ void UInteractableComponent::HandleSetHoverState(bool bIsHovering, UInteractorCo
 	if (bIsHovering)
 	{
 		TempInteractionWidget->SetVisibility(ESlateVisibility::Visible);
-		TempInteractionWidget->SetInteractableText(InteractableText);
+		TempInteractionWidget->SetInteractableText(InteractableTooltip);
 	}
 	else
 	{

@@ -24,8 +24,10 @@ class BUSDRIVER_API UInteractableComponent : public UBoxComponent
 
 	
 public:
+
+	// Tooltip
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	FText InteractableText;
+	FText InteractableTooltip;
 
 	// Delegates
 	
