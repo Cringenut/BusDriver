@@ -18,15 +18,15 @@ public:
 	
 	/** Sets the item currently held */
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
-	void SetItemInHands(TScriptInterface<IEquipmentInterface> NewItemInHands);
+	void SetItemInHands(TScriptInterface<IEquippableInterface> NewItemInHands);
 
 	/** Returns the item currently held */
 	UFUNCTION(BlueprintCallable, Category = "Equipment")
-	TScriptInterface<IEquipmentInterface> GetItemInHands() const;
+	TScriptInterface<IEquippableInterface> GetItemInHands() const;
 
 private:
 	/** The item currently in hands that implements EquipmentInterface */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Equipment", meta = (AllowPrivateAccess = "true"))
-	TScriptInterface<IEquipmentInterface> ItemInHands;
+	TScriptInterface<IEquippableInterface> ItemInHands;
 	
 };

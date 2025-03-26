@@ -5,6 +5,17 @@
 
 #include "Interaction/InteractorComponent.h"
 
+UInteractableComponent::UInteractableComponent()
+{
+	// Set collision preset to custom
+	UPrimitiveComponent::SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	UPrimitiveComponent::SetCollisionObjectType(ECC_WorldDynamic);
+    
+	// Ignore all channels except visibility
+	UPrimitiveComponent::SetCollisionResponseToAllChannels(ECR_Ignore);
+	UPrimitiveComponent::SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+}
+
 void UInteractableComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -25,7 +36,9 @@ void UInteractableComponent::HandleUpdateWidgetInfo(UInteractorComponent* Hoveri
 		return;
 	
 	TempInteractionWidget->SetInteractableText(InteractableTooltip);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactable widget update"));
+
+	if (HoveringInteractor->bDebugMode)
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactable widget update"));
 }
 
 void UInteractableComponent::HandleSetHoverState(bool bIsHovering, UInteractorComponent* HoveringInteractor, UInteractableComponent* Interactable)
@@ -50,5 +63,6 @@ void UInteractableComponent::HandleSetHoverState(bool bIsHovering, UInteractorCo
 void UInteractableComponent::HandleInteract(UInteractorComponent* Interactor, UInteractableComponent* Interactable)
 {
 	// Logic for handling interactions
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactable interaction"));
+	if (Interactor->bDebugMode)
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactable interaction"));
 }

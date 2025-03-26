@@ -20,15 +20,22 @@ class BUSDRIVER_API UInteractableComponent : public UBoxComponent
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpdateWidgetInfo, UInteractorComponent*, HoveringInteractor, UInteractableComponent*, Interactable);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteract, UInteractorComponent*, Interactor, UInteractableComponent*, Interactable);
 
+	UInteractableComponent();
 	virtual void BeginPlay() override;
 
-	
-public:
-
-	// Tooltip
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+protected:
+	UPROPERTY(EditAnywhere, Category = "Interaction")
 	FText InteractableTooltip;
 
+public:
+	// Getter for InteractableTooltip
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	FText GetTooltip() const { return InteractableTooltip; }
+
+	// Setter for InteractableTooltip
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void SetTooltip(const FText& NewTooltip) { InteractableTooltip = NewTooltip; }
+	
 	// Delegates
 	
 	UPROPERTY(BlueprintAssignable, Category = "Behaviour")

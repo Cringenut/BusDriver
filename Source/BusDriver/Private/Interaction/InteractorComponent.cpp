@@ -139,7 +139,9 @@ void UInteractorComponent::UpdateHoveringInteractable()
 
 		if (NewHoveredInteractable)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, DetectionFrequency * 2, FColor::Yellow, TEXT("Hovering"));
+			if (bDebugMode)
+				GEngine->AddOnScreenDebugMessage(-1, DetectionFrequency * 2, FColor::Yellow, TEXT("Hovering"));
+			
 			UpdateCurrentInteractable(NewHoveredInteractable);
 			return;
 		}
@@ -174,7 +176,9 @@ void UInteractorComponent::Interact()
 	if (!HoveringInteractable)
 		return;
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interactor interaction"));
+	if (bDebugMode)
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, TEXT("Interacting"));
+	
 	HoveringInteractable->OnInteract.Broadcast(this, HoveringInteractable);
 	HoveringInteractable->OnUpdateWidgetInfo.Broadcast(this, HoveringInteractable);
 }

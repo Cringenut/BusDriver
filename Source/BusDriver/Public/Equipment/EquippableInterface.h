@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "EquipmentInterface.generated.h"
+#include "EquippableInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, Blueprintable)
-class UEquipmentInterface : public UInterface
+class UEquippableInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
 
-class BUSDRIVER_API IEquipmentInterface
+class BUSDRIVER_API IEquippableInterface
 {
 	GENERATED_BODY()
 

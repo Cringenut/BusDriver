@@ -14,12 +14,12 @@ UEquipmentComponent::UEquipmentComponent()
 }
 
 
-void UEquipmentComponent::SetItemInHands(TScriptInterface<IEquipmentInterface> NewItemInHands)
+void UEquipmentComponent::SetItemInHands(TScriptInterface<IEquippableInterface> NewItemInHands)
 {
 	ItemInHands = NewItemInHands;
 }
 
-TScriptInterface<IEquipmentInterface> UEquipmentComponent::GetItemInHands() const
+TScriptInterface<IEquippableInterface> UEquipmentComponent::GetItemInHands() const
 {
 	return ItemInHands;
 }
