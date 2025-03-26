@@ -31,6 +31,8 @@ void AWeapon::EquipWeapon(USkeletalMeshComponent* ParentMesh, FName SocketName)
 
 		// Prevent from interaction after equipping
 		InteractableComponent->UPrimitiveComponent::SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+
+		bCanFire = true;
 	}
 }
 
@@ -43,23 +45,96 @@ void AWeapon::UnequipWeapon()
 	}
 }
 
-void AWeapon::MainAction_Implementation()
+void AWeapon::MainAction_Implementation(bool bIsPressed)
 {
-	Fire();
+	bIsFirePressed = bIsPressed;
+
+	if (!bIsPressed)
+	{
+		HandleFireRateTimer();
+	}
+	
+	// Implement clicking sound later
+	if (WeaponData.CurrentAmmo <= 0)
+	{
+		NoAmmoLeft();
+		return;
+	}
+	
+	if (!bCanFire)
+		return;
+	
+	FullAutoFire();
 }
 
 void AWeapon::ReloadAction_Implementation()
 {
+	if (bIsFirePressed)
+		return;
+	
 	WeaponData.CurrentAmmo = WeaponData.MaxAmmo;
 	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, FString::Printf(TEXT("Reload ammo: %d"), WeaponData.CurrentAmmo));
 }
 
-void AWeapon::Fire()
+void AWeapon::NoAmmoLeft()
+{
+	// *CLICK SOUND LOGIC HERE* //
+	HandleFireRateTimer();
+}
+
+void AWeapon::HandleFireRateTimer()
+{
+	float RemainingTime = 0.0f;
+    
+	// Check if the timer is already active
+	if (GetWorld()->GetTimerManager().IsTimerActive(FireDelayTimerHandle))
+		RemainingTime = GetWorld()->GetTimerManager().GetTimerRemaining(FireDelayTimerHandle);
+
+	// If there's no remaining time, start a new timer
+	if (RemainingTime <= 0.0f)
+		RemainingTime = 60.0f / WeaponData.RateOfFire;
+
+	// Restart the timer with the remaining duration
+	GetWorld()->GetTimerManager().SetTimer(
+		FireDelayTimerHandle,
+		this,
+		&AWeapon::ResetFire,
+		RemainingTime
+	);
+}
+
+void AWeapon::ResetFire()
+{
+	bCanFire = true;
+}
+
+void AWeapon::SingleFire()
 {
 	if (WeaponData.CurrentAmmo <= 0)
 		return;
 	
 	FireLogic();
+	HandleFireRateTimer();
+}
+
+void AWeapon::FullAutoFire()
+{
+	if (WeaponData.CurrentAmmo <= 0)
+		return;
+	
+	
+	FireLogic();
+	if (bIsFirePressed)
+	{
+		// Start firing in full-auto mode
+		GetWorld()->GetTimerManager().SetTimer(
+			FireDelayTimerHandle,
+			this,
+			&AWeapon::FullAutoFire,
+			60.0f / WeaponData.RateOfFire,
+			true // Looping timer
+		);
+	}
 }
 
 void AWeapon::FireLogic()
@@ -125,6 +200,8 @@ void AWeapon::FireLogic()
 			DebugThickness
 		);
 	}
+
+	bCanFire = false;
 }
 
 

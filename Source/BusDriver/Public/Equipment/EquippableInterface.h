@@ -30,8 +30,8 @@ public:
 	void Drop(ACharacter* Interactor);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Actions")
-	void MainAction();
+	void MainAction(bool bIsPressed);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Actions")
-	void SecondaryAction();
+	void SecondaryAction(bool bIsPressed);
 };

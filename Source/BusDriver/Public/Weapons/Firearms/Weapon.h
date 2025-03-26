@@ -14,7 +14,7 @@ UCLASS()
 class BUSDRIVER_API AWeapon : public AActor, public IEquippableInterface, public IWeaponActionsInterface
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	AWeapon();
@@ -43,19 +43,39 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Equipment")
 	void UnequipWeapon();
 
-	// Fire related functions
+	// Fire
 private:
+	
+	//// VARIABLES ////
+
+	bool bCanFire;
+	bool bIsFirePressed;
+	
+	UPROPERTY()
+	EFiremodes CurrentFireMode = EFiremodes::FullAuto;
 	
 	//// ACTIONS ////
 
 	// Fire
-	virtual void MainAction_Implementation() override;
+	virtual void MainAction_Implementation(bool bIsPressed) override;
 	// Reload
 	virtual void ReloadAction_Implementation() override;
-	
-	UFUNCTION()
-	void Fire();
 
+	//// TIMER HANDLERS
+
+	FTimerHandle FireDelayTimerHandle;
+	
+	//// FUNCTIONS ////
+
+	// Handling
+	void NoAmmoLeft();
+	void HandleFireRateTimer();
+	void ResetFire();
+
+	// Fire types
+	void SingleFire();
+	void FullAutoFire();
+	
 	// Effects, projectile, linetrace etc.
 	UFUNCTION()
 	void FireLogic();
