@@ -51,15 +51,14 @@ private:
 	bool bCanFire;
 	bool bIsFirePressed;
 	
-	UPROPERTY()
-	EFiremodes CurrentFireMode = EFiremodes::FullAuto;
-	
 	//// ACTIONS ////
 
 	// Fire
 	virtual void MainAction_Implementation(bool bIsPressed) override;
 	// Reload
 	virtual void ReloadAction_Implementation() override;
+	// Switch firemode
+	virtual void SwitchFiremodeAction_Implementation() override;
 
 	//// TIMER HANDLERS
 
@@ -68,7 +67,6 @@ private:
 	//// FUNCTIONS ////
 
 	// Handling
-	void NoAmmoLeft();
 	void HandleFireRateTimer();
 	void ResetFire();
 

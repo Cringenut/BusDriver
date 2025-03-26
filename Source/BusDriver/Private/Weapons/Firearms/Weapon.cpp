@@ -6,20 +6,23 @@
 // Sets default values
 AWeapon::AWeapon()
 {
+	// Weapon mesh
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(WeaponMesh);
 
+	// Interactable
 	InteractableComponent = CreateDefaultSubobject<UInteractableComponent>(TEXT("Interactable"));
 	InteractableComponent->SetTooltip(FText::FromString(TEXT("Equip")));
 	InteractableComponent->SetupAttachment(WeaponMesh);
-
 }
 
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Set default firemode
+	WeaponData.CurrentFireMode = WeaponData.DefaultFireMode;
 }
 
 void AWeapon::EquipWeapon(USkeletalMeshComponent* ParentMesh, FName SocketName)
@@ -49,6 +52,8 @@ void AWeapon::MainAction_Implementation(bool bIsPressed)
 {
 	bIsFirePressed = bIsPressed;
 
+	// Reset fire for full auto mode
+	// Cleans the timer handle
 	if (!bIsPressed)
 	{
 		HandleFireRateTimer();
@@ -57,29 +62,70 @@ void AWeapon::MainAction_Implementation(bool bIsPressed)
 	// Implement clicking sound later
 	if (WeaponData.CurrentAmmo <= 0)
 	{
-		NoAmmoLeft();
 		return;
 	}
 	
 	if (!bCanFire)
 		return;
+
+	switch (WeaponData.CurrentFireMode)
+	{
+		case EFiremodes::FullAuto:
+			FullAutoFire();
+		break;
 	
-	FullAutoFire();
+		case EFiremodes::Single:
+			SingleFire();
+		break;
+
+		default:
+			UE_LOG(LogTemp, Warning, TEXT("Unknown fire mode!"));
+		break;
+	}
 }
 
 void AWeapon::ReloadAction_Implementation()
 {
 	if (bIsFirePressed)
 		return;
-	
+
+	// Reload all ammo
 	WeaponData.CurrentAmmo = WeaponData.MaxAmmo;
-	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, FString::Printf(TEXT("Reload ammo: %d"), WeaponData.CurrentAmmo));
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		0.8f,
+		FColor::Yellow,
+		FString::Printf(TEXT("Reload ammo: %d"),
+			WeaponData.CurrentAmmo)
+	);
 }
 
-void AWeapon::NoAmmoLeft()
+void AWeapon::SwitchFiremodeAction_Implementation()
 {
-	// *CLICK SOUND LOGIC HERE* //
-	HandleFireRateTimer();
+	if (bIsFirePressed)
+		return;
+
+	if (WeaponData.AvailableFiremodes.Num() == 0) return;
+
+	// Get keys from map
+	TArray<EFiremodes> FiremodeKeys;
+	WeaponData.AvailableFiremodes.GetKeys(FiremodeKeys);
+
+	// Find current firemode
+	int32 CurrentIndex = FiremodeKeys.IndexOfByKey(WeaponData.CurrentFireMode);
+	int32 NextIndex = (CurrentIndex + 1) % FiremodeKeys.Num();
+
+	// Iterate to find next available
+	for (int32 i = 0; i < FiremodeKeys.Num(); i++)
+	{
+		EFiremodes NextFiremode = FiremodeKeys[NextIndex];
+		if (WeaponData.AvailableFiremodes[NextFiremode])
+		{
+			WeaponData.CurrentFireMode = NextFiremode;
+			return;
+		}
+		NextIndex = (NextIndex + 1) % FiremodeKeys.Num();
+	}
 }
 
 void AWeapon::HandleFireRateTimer()
@@ -114,7 +160,6 @@ void AWeapon::SingleFire()
 		return;
 	
 	FireLogic();
-	HandleFireRateTimer();
 }
 
 void AWeapon::FullAutoFire()
@@ -122,11 +167,12 @@ void AWeapon::FullAutoFire()
 	if (WeaponData.CurrentAmmo <= 0)
 		return;
 	
-	
 	FireLogic();
+	// Keep firing until no ammo left or fire key released
 	if (bIsFirePressed)
 	{
 		// Start firing in full-auto mode
+		// Overrides current timer handle
 		GetWorld()->GetTimerManager().SetTimer(
 			FireDelayTimerHandle,
 			this,
@@ -139,7 +185,6 @@ void AWeapon::FullAutoFire()
 
 void AWeapon::FireLogic()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, TEXT("Pew"));
 	--WeaponData.CurrentAmmo;
 	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, FString::Printf(TEXT("Ammo Left: %d"), WeaponData.CurrentAmmo));
 
@@ -202,6 +247,8 @@ void AWeapon::FireLogic()
 	}
 
 	bCanFire = false;
+	// Prevents from infinite fire rate
+	HandleFireRateTimer();
 }
 
 

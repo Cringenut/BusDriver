@@ -6,8 +6,8 @@
 UENUM(BlueprintType)
 enum class EFiremodes : uint8  
 {
-	Single UMETA(DisplayName = "SINGLE"),   // Single shot mode
-	FullAuto UMETA(DisplayName = "FULLAUTO"),  // Full auto mode
+	Single UMETA(DisplayName = "Single"),   // Single shot mode
+	FullAuto UMETA(DisplayName = "FullAuto"),  // Full auto mode
 };
 
 USTRUCT(BlueprintType)
@@ -18,7 +18,8 @@ struct FWeaponData
 public:
 	// Default constructor to initialize properties
 	FWeaponData()
-		: MaxAmmo(30), CurrentAmmo(30), Damage(25.0f), RateOfFire(600), Range(1000.0f)
+		: MaxAmmo(30), CurrentAmmo(30), Damage(25.0f), RateOfFire(600), DefaultFireMode(EFiremodes::Single), CurrentFireMode(),
+		  Range(1000.0f)
 	{
 		// Add default fire modes to the available array
 		AvailableFiremodes.Add(EFiremodes::Single, true);
@@ -44,8 +45,14 @@ public:
 	int RateOfFire;
 
 	// Available fire modes for the weapon (<Firemode, isAvailable>)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Stats|Firing")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Stats|Firemodes")
 	TMap<EFiremodes, bool> AvailableFiremodes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Stats|Firemodes")
+	EFiremodes DefaultFireMode;
+
+	UPROPERTY(BlueprintReadWrite, Category="Weapon Stats|Firemodes")
+	EFiremodes CurrentFireMode;
 
 	// Weapon range for hitscan weapon
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Stats|Ballistics")
