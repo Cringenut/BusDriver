@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "WeaponActionsInterface.h"
+#include "WeaponData.h"
 #include "Equipment/EquippableInterface.h"
 #include "GameFramework/Actor.h"
 #include "Interaction/InteractableComponent.h"
@@ -30,6 +31,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	UInteractableComponent* InteractableComponent;
+
+	// Weapon Data
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Stats")
+	FWeaponData WeaponData;
 	
 	// Equipment functions
 	UFUNCTION(BlueprintCallable, Category="Equipment")
@@ -40,11 +45,8 @@ public:
 
 	// Fire related functions
 private:
-
-	UPROPERTY()
-	int CurrentAmmo = 30;
-
-	// Actions
+	
+	//// ACTIONS ////
 
 	// Fire
 	virtual void MainAction_Implementation() override;

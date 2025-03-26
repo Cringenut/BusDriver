@@ -50,13 +50,13 @@ void AWeapon::MainAction_Implementation()
 
 void AWeapon::ReloadAction_Implementation()
 {
-	CurrentAmmo = 30;
-	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, FString::Printf(TEXT("Reload ammo: %d"), CurrentAmmo));
+	WeaponData.CurrentAmmo = WeaponData.MaxAmmo;
+	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, FString::Printf(TEXT("Reload ammo: %d"), WeaponData.CurrentAmmo));
 }
 
 void AWeapon::Fire()
 {
-	if (CurrentAmmo <= 0)
+	if (WeaponData.CurrentAmmo <= 0)
 		return;
 	
 	FireLogic();
@@ -65,8 +65,8 @@ void AWeapon::Fire()
 void AWeapon::FireLogic()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, TEXT("Pew"));
-	--CurrentAmmo;
-	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, FString::Printf(TEXT("Ammo Left: %d"), CurrentAmmo));
+	--WeaponData.CurrentAmmo;
+	GEngine->AddOnScreenDebugMessage(-1, 0.8f, FColor::Yellow, FString::Printf(TEXT("Ammo Left: %d"), WeaponData.CurrentAmmo));
 
 	if (!WeaponMesh) return;
 
