@@ -1,9 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponData.generated.h" 
 
 UENUM(BlueprintType)
-enum class EFiremodes : uint8  // Use enum class for better scoping and safety
+enum class EFiremodes : uint8  
 {
 	Single UMETA(DisplayName = "SINGLE"),   // Single shot mode
 	FullAuto UMETA(DisplayName = "FULLAUTO"),  // Full auto mode
@@ -21,7 +22,7 @@ public:
 	{
 		// Add default fire modes to the available array
 		AvailableFiremodes.Add(EFiremodes::Single, true);
-		AvailableFiremodes.Add(EFiremodes::FullAuto);
+		AvailableFiremodes.Add(EFiremodes::FullAuto, true);
 	}
 
 	// Properties for weapon data

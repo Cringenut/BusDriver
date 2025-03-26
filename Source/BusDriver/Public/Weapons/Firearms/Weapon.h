@@ -33,7 +33,7 @@ public:
 	UInteractableComponent* InteractableComponent;
 
 	// Weapon Data
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon Stats")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	FWeaponData WeaponData;
 	
 	// Equipment functions
