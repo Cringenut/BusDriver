@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponActionsInterface.h"
 #include "Equipment/EquippableInterface.h"
 #include "GameFramework/Actor.h"
 #include "Interaction/InteractableComponent.h"
 #include "Weapon.generated.h"
 
 UCLASS()
-class BUSDRIVER_API AWeapon : public AActor, public IEquippableInterface
+class BUSDRIVER_API AWeapon : public AActor, public IEquippableInterface, public IWeaponActionsInterface
 {
 	GENERATED_BODY()
 	
@@ -37,4 +38,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Equipment")
 	void UnequipWeapon();
 
+	// Fire related functions
+private:
+
+	UPROPERTY()
+	int CurrentAmmo = 30;
+
+	// Actions
+
+	// Fire
+	virtual void MainAction_Implementation() override;
+	// Reload
+	virtual void ReloadAction_Implementation() override;
+	
+	UFUNCTION()
+	void Fire();
+
+	// Effects, projectile, linetrace etc.
+	UFUNCTION()
+	void FireLogic();
+	
 };
