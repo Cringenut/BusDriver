@@ -63,6 +63,7 @@ private:
 	//// TIMER HANDLERS
 
 	FTimerHandle FireDelayTimerHandle;
+	FTimerHandle BurstFireTimerHandle;
 	
 	//// FUNCTIONS ////
 
@@ -72,7 +73,11 @@ private:
 
 	// Fire types
 	void SingleFire();
+	void BurstFire(int ShotsLeft);
 	void FullAutoFire();
+
+	// Debug
+	FString  FiremodeToString(EFiremodes Firemode) const;
 	
 	// Effects, projectile, linetrace etc.
 	UFUNCTION()

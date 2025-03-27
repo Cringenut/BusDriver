@@ -51,42 +51,45 @@ void AWeapon::UnequipWeapon()
 void AWeapon::MainAction_Implementation(bool bIsPressed)
 {
 	bIsFirePressed = bIsPressed;
-
-	// Reset fire for full auto mode
-	// Cleans the timer handle
-	if (!bIsPressed)
-	{
-		HandleFireRateTimer();
-	}
 	
 	// Implement clicking sound later
 	if (WeaponData.CurrentAmmo <= 0)
-	{
 		return;
-	}
 	
 	if (!bCanFire)
 		return;
 
+	if (bIsPressed)
 	switch (WeaponData.CurrentFireMode)
 	{
-		case EFiremodes::FullAuto:
-			FullAutoFire();
+	case EFiremodes::FullAuto:
+		FullAutoFire();
 		break;
-	
-		case EFiremodes::Single:
-			SingleFire();
+
+	case EFiremodes::Burst:
+			BurstFire(3);
+		break;
+
+	case EFiremodes::Single:
+		SingleFire();
 		break;
 
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("Unknown fire mode!"));
 		break;
 	}
+
+	// Reset fire for full auto mode
+	// Cleans the timer handle
+	if (!bIsPressed && WeaponData.CurrentFireMode != EFiremodes::Burst)
+	{
+		HandleFireRateTimer();
+	}
 }
 
 void AWeapon::ReloadAction_Implementation()
 {
-	if (bIsFirePressed)
+	if (bIsFirePressed && bCanFire)
 		return;
 
 	// Reload all ammo
@@ -102,7 +105,7 @@ void AWeapon::ReloadAction_Implementation()
 
 void AWeapon::SwitchFiremodeAction_Implementation()
 {
-	if (bIsFirePressed)
+	if (bIsFirePressed && bCanFire)
 		return;
 
 	if (WeaponData.AvailableFiremodes.Num() == 0) return;
@@ -122,6 +125,12 @@ void AWeapon::SwitchFiremodeAction_Implementation()
 		if (WeaponData.AvailableFiremodes[NextFiremode])
 		{
 			WeaponData.CurrentFireMode = NextFiremode;
+
+			GEngine->AddOnScreenDebugMessage(
+							-1, 1.5f, FColor::Green, 
+							FString::Printf(TEXT("Fire mode switched to: %s"), *FiremodeToString(WeaponData.CurrentFireMode))
+						);
+			
 			return;
 		}
 		NextIndex = (NextIndex + 1) % FiremodeKeys.Num();
@@ -162,6 +171,32 @@ void AWeapon::SingleFire()
 	FireLogic();
 }
 
+void AWeapon::BurstFire(int ShotsLeft)
+{
+	if (WeaponData.CurrentAmmo <= 0 || ShotsLeft <= 0)
+		return;
+
+	FireLogic();
+	ShotsLeft--;
+
+	// If there are shots to fire set a timer for the next
+	if (ShotsLeft > 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(
+			FireDelayTimerHandle,
+			FTimerDelegate::CreateUObject(this, &AWeapon::BurstFire, ShotsLeft),
+			60.0f / WeaponData.RateOfFire,
+			false // Non-looping timer for burst fire
+		);
+	}
+	else
+	{
+		// All shots in the burst are fired
+		bCanFire = false;
+		HandleFireRateTimer();
+	}
+}
+
 void AWeapon::FullAutoFire()
 {
 	if (WeaponData.CurrentAmmo <= 0)
@@ -180,6 +215,24 @@ void AWeapon::FullAutoFire()
 			60.0f / WeaponData.RateOfFire,
 			true // Looping timer
 		);
+	}
+}
+
+FString AWeapon::FiremodeToString(EFiremodes Firemode) const
+{
+	switch (Firemode)
+	{
+	case EFiremodes::FullAuto:
+		return TEXT("Full Auto");
+
+	case EFiremodes::Burst:
+		return TEXT("Burst");
+
+	case EFiremodes::Single:
+		return TEXT("Single");
+
+	default:
+		return TEXT("Unknown");
 	}
 }
 

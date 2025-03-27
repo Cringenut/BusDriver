@@ -7,6 +7,7 @@ UENUM(BlueprintType)
 enum class EFiremodes : uint8  
 {
 	Single UMETA(DisplayName = "Single"),   // Single shot mode
+	Burst UMETA(DisplayName = "Burst"),  // Full auto mode
 	FullAuto UMETA(DisplayName = "FullAuto"),  // Full auto mode
 };
 
@@ -23,6 +24,7 @@ public:
 	{
 		// Add default fire modes to the available array
 		AvailableFiremodes.Add(EFiremodes::Single, true);
+		AvailableFiremodes.Add(EFiremodes::Burst, true);
 		AvailableFiremodes.Add(EFiremodes::FullAuto, true);
 	}
 
