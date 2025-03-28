@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "WeaponActionsInterface.h"
 #include "WeaponData.h"
+#include "Camera/CameraComponent.h"
 #include "Equipment/EquippableInterface.h"
 #include "GameFramework/Actor.h"
 #include "Interaction/InteractableComponent.h"
@@ -80,7 +81,33 @@ private:
 	FString  FiremodeToString(EFiremodes Firemode) const;
 	
 	// Effects, projectile, linetrace etc.
-	UFUNCTION()
 	void FireLogic();
+
+	//// AIM DOWN SIGHT ////
+private:
+	// Player's camera
+	UPROPERTY()
+	UCameraComponent* ADSCamera;
+
+	// ADS Transform
+	UPROPERTY()
+	FTransform ADSTransform;
+
+public:
+	// Getters and setters
+	UFUNCTION(BlueprintCallable, Category = "ADS")
+	void SetADSCamera(UCameraComponent* NewADSCamera) { ADSCamera = NewADSCamera; }
+
+	UFUNCTION(BlueprintCallable, Category = "ADS")
+	UCameraComponent* GetADSCamera() const { return ADSCamera; }
+
+	// Getters and setters
+	UFUNCTION(BlueprintCallable, Category = "ADS")
+	void SetADSTransform(const FTransform& NewADSTransform) { ADSTransform = NewADSTransform; }
+
+	UFUNCTION(BlueprintCallable, Category = "ADS")
+	FTransform GetADSTransform() const { return ADSTransform; }
+
+	
 	
 };
