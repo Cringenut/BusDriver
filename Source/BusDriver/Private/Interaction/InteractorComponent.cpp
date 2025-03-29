@@ -159,6 +159,18 @@ void UInteractorComponent::UpdateCurrentInteractable(UInteractableComponent* New
 	if (HoveringInteractable)
 	{
 		HoveringInteractable->OnHoverUpdated.Broadcast(false, this, HoveringInteractable);
+
+		// Disable custom depth rendering on attached components of the current interactable
+		TArray<USceneComponent*> AttachedComponents;
+		HoveringInteractable->GetOwner()->GetComponents(AttachedComponents);
+		for (USceneComponent* Component : AttachedComponents)
+		{
+			UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Component);
+			if (PrimitiveComponent)
+			{
+				PrimitiveComponent->SetRenderCustomDepth(false);
+			}
+		}
 	}
     
 	// Update to the new interactable
@@ -168,6 +180,18 @@ void UInteractorComponent::UpdateCurrentInteractable(UInteractableComponent* New
 	if (HoveringInteractable)
 	{
 		HoveringInteractable->OnHoverUpdated.Broadcast(true, this, HoveringInteractable);
+
+		// Enable custom depth rendering on attached components of the new interactable
+		TArray<USceneComponent*> AttachedComponents;
+		HoveringInteractable->GetOwner()->GetComponents(AttachedComponents);
+		for (USceneComponent* Component : AttachedComponents)
+		{
+			UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Component);
+			if (PrimitiveComponent)
+			{
+				PrimitiveComponent->SetRenderCustomDepth(true);
+			}
+		}
 	}
 }
 
