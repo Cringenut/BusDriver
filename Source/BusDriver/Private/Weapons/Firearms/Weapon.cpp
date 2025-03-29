@@ -51,36 +51,45 @@ void AWeapon::UnequipWeapon()
 void AWeapon::MainAction_Implementation(bool bIsPressed)
 {
 	bIsFirePressed = bIsPressed;
-	
-	// Implement clicking sound later
+
+	// If no ammo, return
 	if (WeaponData.CurrentAmmo <= 0)
 		return;
-	
+
 	if (!bCanFire)
 		return;
 
 	if (bIsPressed)
-	switch (WeaponData.CurrentFireMode)
 	{
-	case EFiremodes::FullAuto:
-		FullAutoFire();
-		break;
+		switch (WeaponData.CurrentFireMode)
+		{
+		case EFiremodes::FullAuto:
+			FullAutoFire();
+			break;
 
-	case EFiremodes::Burst:
+		case EFiremodes::Burst:
 			BurstFire(3);
-		break;
+			break;
 
-	case EFiremodes::Single:
-		SingleFire();
-		break;
+		case EFiremodes::Single:
+			SingleFire();
+			break;
 
 		default:
 			UE_LOG(LogTemp, Warning, TEXT("Unknown fire mode!"));
-		break;
+			break;
+		}
+	}
+	else
+	{
+		// Stop the auto fire when button is released (full auto mode)
+		if (WeaponData.CurrentFireMode == EFiremodes::FullAuto)
+		{
+			HandleFireRateTimer();
+		}
 	}
 
-	// Reset fire for full auto mode
-	// Cleans the timer handle
+	// Reset fire after release (only for non-burst modes)
 	if (!bIsPressed && WeaponData.CurrentFireMode != EFiremodes::Burst)
 	{
 		HandleFireRateTimer();
@@ -101,6 +110,10 @@ void AWeapon::ReloadAction_Implementation()
 		FString::Printf(TEXT("Reload ammo: %d"),
 			WeaponData.CurrentAmmo)
 	);
+
+	// Update weapon state widget
+	if (WeaponStateWidget)
+		WeaponStateWidget->UpdateWeaponState(this);
 }
 
 void AWeapon::SwitchFiremodeAction_Implementation()
@@ -207,21 +220,29 @@ void AWeapon::BurstFire(int ShotsLeft)
 void AWeapon::FullAutoFire()
 {
 	if (WeaponData.CurrentAmmo <= 0)
+	{
+		HandleFireRateTimer();
 		return;
-	
+	}
+
 	FireLogic();
-	// Keep firing until no ammo left or fire key released
+
+	// Continue firing while button is pressed
 	if (bIsFirePressed)
 	{
-		// Start firing in full-auto mode
-		// Overrides current timer handle
+		// Keep firing in full-auto mode with the timer
 		GetWorld()->GetTimerManager().SetTimer(
 			FireDelayTimerHandle,
 			this,
 			&AWeapon::FullAutoFire,
 			60.0f / WeaponData.RateOfFire,
-			true // Looping timer
+			true // Looping timer for full-auto
 		);
+	}
+	else
+	{
+		// Stop firing if the button is released
+		HandleFireRateTimer();
 	}
 }
 
