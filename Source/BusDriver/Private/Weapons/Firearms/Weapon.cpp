@@ -130,11 +130,18 @@ void AWeapon::SwitchFiremodeAction_Implementation()
 							-1, 1.5f, FColor::Green, 
 							FString::Printf(TEXT("Fire mode switched to: %s"), *FiremodeToString(WeaponData.CurrentFireMode))
 						);
+			// Update weapon state widget
+			if (WeaponStateWidget)
+				WeaponStateWidget->UpdateWeaponState(this);
 			
 			return;
 		}
 		NextIndex = (NextIndex + 1) % FiremodeKeys.Num();
 	}
+	
+	// Update weapon state widget
+	if (WeaponStateWidget)
+		WeaponStateWidget->UpdateWeaponState(this);
 }
 
 void AWeapon::HandleFireRateTimer()
@@ -299,6 +306,10 @@ void AWeapon::FireLogic()
 		);
 	}
 
+	// Update weapon state widget
+	if (WeaponStateWidget)
+		WeaponStateWidget->UpdateWeaponState(this);
+	
 	bCanFire = false;
 	// Prevents from infinite fire rate
 	HandleFireRateTimer();

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "WeaponActionsInterface.h"
 #include "WeaponData.h"
+#include "WeaponStateWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Equipment/EquippableInterface.h"
 #include "GameFramework/Actor.h"
@@ -44,6 +45,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Equipment")
 	void UnequipWeapon();
 
+	// Enum to String
+	FString FiremodeToString(EFiremodes Firemode) const;
+
 	// Fire
 private:
 	
@@ -76,9 +80,6 @@ private:
 	void SingleFire();
 	void BurstFire(int ShotsLeft);
 	void FullAutoFire();
-
-	// Debug
-	FString  FiremodeToString(EFiremodes Firemode) const;
 	
 	// Effects, projectile, linetrace etc.
 	void FireLogic();
@@ -108,6 +109,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ADS")
 	FTransform GetADSTransform() const { return ADSTransform; }
 
+	//// WIDGETS ////
 	
+private:
+	UPROPERTY()
+	UWeaponStateWidget* WeaponStateWidget;
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "ADS")
+	void SetWeaponStateWidget(UWeaponStateWidget* NewWeaponStateWidget)
+	{
+		WeaponStateWidget = NewWeaponStateWidget;
+		if (WeaponStateWidget)
+		{
+			WeaponStateWidget->UpdateWeaponState(this);
+			WeaponStateWidget->SetVisibility(ESlateVisibility::Visible);
+		}
+	}
 	
 };
