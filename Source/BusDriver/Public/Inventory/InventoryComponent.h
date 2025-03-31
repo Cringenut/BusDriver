@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryItem.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
@@ -24,5 +25,17 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+private:
+	UPROPERTY()
+	TArray<AInventoryItem*> Inventory;
+
+	// Inventory functions
+public:
+	// Bool to hide item in world if successful
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	bool AddToInventory(AInventoryItem* ItemToAdd);
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	TArray<AInventoryItem*> GetInventory() const { return Inventory; }
+	
 };

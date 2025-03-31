@@ -19,8 +19,9 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	// Set inventory size
+	// Remove later
+	Inventory.SetNum(5);
 }
 
 
@@ -30,5 +31,22 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+bool UInventoryComponent::AddToInventory(AInventoryItem* ItemToAdd)
+{
+	if (!ItemToAdd)
+		return false;
+
+	for (int Index = 0; Index < Inventory.Num(); Index++)
+	{
+		if (!Inventory[Index])
+		{
+			Inventory[Index] = ItemToAdd;
+			return true;
+		}
+	}
+
+	return false;
 }
 

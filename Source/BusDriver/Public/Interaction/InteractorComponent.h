@@ -92,7 +92,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void Interact();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Detection")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<UInteractionWidget> InteractionWidgetClass;
 	
 };
