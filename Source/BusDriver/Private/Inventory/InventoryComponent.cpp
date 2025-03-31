@@ -20,18 +20,10 @@ void UInventoryComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// Set inventory size
-	// Remove later
-	Inventory.SetNum(5);
+	Inventory.SetNum(InventoryStruct.Size);
 }
 
 
-// Called every frame
-void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
 
 bool UInventoryComponent::AddToInventory(AInventoryItem* ItemToAdd)
 {

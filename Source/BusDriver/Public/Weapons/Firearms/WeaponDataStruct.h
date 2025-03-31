@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WeaponData.generated.h" 
+#include "WeaponDataStruct.generated.h"
 
 UENUM(BlueprintType)
 enum class EFiremodes : uint8  
@@ -12,13 +12,13 @@ enum class EFiremodes : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FWeaponData
+struct FWeaponDataStruct
 {
 	GENERATED_BODY()
 
 public:
 	// Default constructor to initialize properties
-	FWeaponData()
+	FWeaponDataStruct()
 		: MaxAmmo(30), CurrentAmmo(30), Damage(25.0f), RateOfFire(600), DefaultFireMode(EFiremodes::Single), CurrentFireMode(),
 		  Range(1000.0f)
 	{

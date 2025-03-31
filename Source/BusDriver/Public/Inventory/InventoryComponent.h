@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InventoryItem.h"
+#include "InventoryStructs.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
@@ -22,9 +23,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	// Weapon Data
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory")
+	FInventoryStruct InventoryStruct;
+	
 private:
 	UPROPERTY()
 	TArray<AInventoryItem*> Inventory;

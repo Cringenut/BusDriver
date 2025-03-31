@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "WeaponActionsInterface.h"
-#include "WeaponData.h"
+#include "WeaponDataStruct.h"
 #include "WeaponStateWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Equipment/EquippableInterface.h"
@@ -36,7 +36,7 @@ public:
 
 	// Weapon Data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
-	FWeaponData WeaponData;
+	FWeaponDataStruct WeaponData;
 	
 	// Equipment functions
 	UFUNCTION(BlueprintCallable, Category="Equipment")
