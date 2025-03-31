@@ -14,6 +14,8 @@ class BUSDRIVER_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded, AInventoryItem*, AddedItem);
+
 public:	
 	// Sets default values for this component's properties
 	UInventoryComponent();
@@ -33,6 +35,10 @@ private:
 
 	// Inventory functions
 public:
+	// Event dispatcher for item added
+	UPROPERTY(BlueprintAssignable, Category="Inventory")
+	FOnItemAdded OnItemAdded;
+	
 	// Bool to hide item in world if successful
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	bool AddToInventory(AInventoryItem* ItemToAdd);

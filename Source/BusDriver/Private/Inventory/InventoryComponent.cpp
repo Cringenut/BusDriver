@@ -35,6 +35,7 @@ bool UInventoryComponent::AddToInventory(AInventoryItem* ItemToAdd)
 		if (!Inventory[Index])
 		{
 			Inventory[Index] = ItemToAdd;
+			OnItemAdded.Broadcast(Inventory[Index]);
 			return true;
 		}
 	}
