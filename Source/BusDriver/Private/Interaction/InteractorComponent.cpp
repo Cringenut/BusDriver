@@ -3,6 +3,7 @@
 
 #include "Interaction/InteractorComponent.h"
 
+#include "LevelEditorMenuContext.h"
 #include "Interaction/InteractableComponent.h"
 
 // Sets default values for this component's properties
@@ -21,6 +22,14 @@ void UInteractorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Create interaction widget
+	if (InteractionWidgetClass)
+	{
+		InteractionWidget = CreateWidget<UInteractionWidget>(GetWorld(), InteractionWidgetClass);
+		InteractionWidget->AddToViewport();
+		InteractionWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	
 	SetDetectionActive(true);
 }
 
