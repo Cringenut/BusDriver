@@ -8,7 +8,7 @@
 #include "InventoryComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, meta=(BlueprintSpawnableComponent) )
 class BUSDRIVER_API UInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
